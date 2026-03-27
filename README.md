@@ -1,7 +1,7 @@
 # D.U.B.B.I.O
-<img width="33%" height="auto" alt="Image" src="https://github.com/user-attachments/assets/aac0fab7-6bc1-4632-a464-35356a0ac075" />
-<img width="33%" height="auto" alt="Image" src="https://github.com/user-attachments/assets/ae8abbbf-c109-456d-91ce-2045c62854d8" />
-<img width="33%" height="auto" alt="Image" src="https://github.com/user-attachments/assets/d355f712-5b9d-4b5f-90d6-d6b487dc85c7" />
+<img width="32%" height="auto" alt="Image" src="https://github.com/user-attachments/assets/aac0fab7-6bc1-4632-a464-35356a0ac075" />
+<img width="32%" height="auto" alt="Image" src="https://github.com/user-attachments/assets/ae8abbbf-c109-456d-91ce-2045c62854d8" />
+<img width="32%" height="auto" alt="Image" src="https://github.com/user-attachments/assets/d355f712-5b9d-4b5f-90d6-d6b487dc85c7" />
 <div align="center">
   <b><현재 개발중인 인게임 이미지></b>
 </div>
