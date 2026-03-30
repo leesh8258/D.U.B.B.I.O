@@ -34,6 +34,32 @@ BEAVER ROCKS 2025 온라인 전시작 소개영상
 ## 3. 구현 기능
 
 ### 1. 세이브 / 로드 기능
+<details open>
+  <summary>세이브 기능 구현 코드 일부</summary>
+
+```csharp
+string finalJson = JsonUtility.ToJson(saveDataJson, false);
+
+await Task.Run(() =>
+{
+    string tempPath = saveFilePath + ".tmp";
+    string bakPath = saveFilePath + ".bak";
+
+    File.WriteAllText(tempPath, finalJson);
+
+    if (File.Exists(saveFilePath))
+    {
+        if (File.Exists(bakPath)) File.Delete(bakPath);
+        File.Move(saveFilePath, bakPath);
+    }
+
+    File.Move(tempPath, saveFilePath);
+
+    if (File.Exists(bakPath)) File.Delete(bakPath);
+});
+```
+</details>
+
 - 구현 방식
   - Task 기반 비동기 파일 입출력을 사용해 저장/불러오기 중 메인 스레드 정지를 최소화
   - .tmp 임시 파일 저장 후 기존 파일 백업, 최종 파일 교체 방식으로 저장 안정성 확보
@@ -46,6 +72,30 @@ BEAVER ROCKS 2025 온라인 전시작 소개영상
   - 각 시스템이 직접 세이브 파일을 건드리지 않으면서 최신 상태를 안전하게 기록하기 위해 이벤트 호출 방식 선택.
 
 ### 2. 인벤토리 기능
+<details open>
+  <summary>인벤토리 기능 구현 코드 일부</summary>
+
+```csharp
+public bool AcquireItem(ItemType type)
+{
+    int mask = 1 << (int)type;
+
+    if ((itemFlag & mask) != 0) return false;
+    itemFlag |= mask;
+    return true;
+}
+
+public bool RemoveItem(ItemType type)
+{
+    int mask = 1 << (int)type;
+
+     if ((itemFlag & mask) == 0) return false;
+    itemFlag &= ~mask;
+    return true;
+}
+```
+</details>
+
 - 구현 방식
   - 아이템 보유 상태를 int 하나의 비트 플래그로 관리
   - 획득, 제거, 보유 등 기능함수에서 비트 연산을 사용하여 처리
@@ -56,19 +106,39 @@ BEAVER ROCKS 2025 온라인 전시작 소개영상
   - 아이템 종류가 많지 않고, 각 아이템의 상태도 존재유무 정도로 단순하기 때문에 리스트나 딕셔너리 대신 비트 플래그 방식으로 경량화한 구조
   - 런타임 관리와 저장 구조를 단순하게 맞추기 좋다는 장점
 
-### 3. 일차별 게임 데이터
-- 구현방식
-  - (level, day) 조합을 기준으로 해당 일차에 사용할 단서 설정과 데이터셋을 조회하도록 구성
-  - 기본 단서 규칙과 특정 슬롯 강제 규칙을 분리해 일차별 단서 구성을 제어
-  - 용의자, 키워드 같은 실제 플레이 데이터도 별도 데이터셋으로 관리
-  - 단서 타입별 별칭 문자열과 카테고리별 표시 스타일도 데이터 에셋으로 분리
-  - 로컬라이제이션 키와 UI 색상 정보까지 포함해 콘텐츠와 표현을 함께 관리할 수 있도록 구성
+### 3. 미니게임
+<details open>
+  <summary>미니게임 기능 구현 코드 일부</summary>
+  
+```csharp
+// MiniGame.cs
+protected abstract void PrepareGame();
 
-- 구현 이유
-  -  게임 진행이 일차별로 달라지는 구조에서는, 단순히 텍스트만 바꾸는 것이 아니라 단서 규칙, 데이터셋, 표현 방식 전체가 함께 바뀔 수 있기 때문에 이를 전부 데이터 중심 구조로 분리
-  -  코드 분기 추가 없이 에디터에서 직접 관리할 수 있어 유지보수와 확장에 유리
+// PINInput.cs (MiniGame 상속)
+protected override void PrepareGame()
+{
+    StopModeBTimer();
+    SetupSlotsForLength_B(pinLength);
+    ...
+}
 
-### 4. 미니게임
+public void AddDigitA(int digit)
+{
+    if (mode != PinMode.A) return;
+    if (digit < 0 || digit > 9) return;
+    if (inputA.Length >= pinLength) return;
+
+    inputA += (char)('0' + digit);
+    RefreshDisplayA();
+
+    if (inputA.Length == pinLength)
+    {
+        ValidateA();
+    }
+}
+```
+</details>
+
 - 구현방식
   - MiniGame 추상 클래스로 공통 구조를 정의하고, 각 미니게임은 상속을 통해 개별 로직만 구현
   - 공통 생명주기인 설정, 시작, 정리, 복구, 일시정지/재개 흐름을 베이스 클래스에서 통합 관리
@@ -79,6 +149,18 @@ BEAVER ROCKS 2025 온라인 전시작 소개영상
 - 구현이유
   - 많은 개수의 미니게임 관리를 위해 공통 구조는 상속 기반 베이스 클래스에 모으고, 각 미니게임은 자신의 규칙만 구현하는 구조로 설계
   - 클리어 처리나 UI 연출, 정지/재개 같은 공통 기능도 일관되게 유지할 수 있다는 장점
+
+### 4. 일차별 게임 데이터
+- 구현방식
+  - (level, day) 조합을 기준으로 해당 일차에 사용할 단서 설정과 데이터셋을 조회하도록 구성
+  - 기본 단서 규칙과 특정 슬롯 강제 규칙을 분리해 일차별 단서 구성을 제어
+  - 용의자, 키워드 같은 실제 플레이 데이터도 별도 데이터셋으로 관리
+  - 단서 타입별 별칭 문자열과 카테고리별 표시 스타일도 데이터 에셋으로 분리
+  - 로컬라이제이션 키와 UI 색상 정보까지 포함해 콘텐츠와 표현을 함께 관리할 수 있도록 구성
+
+- 구현 이유
+  -  게임 진행이 일차별로 달라지는 구조에서는, 단순히 텍스트만 바꾸는 것이 아니라 단서 규칙, 데이터셋, 표현 방식 전체가 함께 바뀔 수 있기 때문에 이를 전부 데이터 중심 구조로 분리
+  -  코드 분기 추가 없이 에디터에서 직접 관리할 수 있어 유지보수와 확장에 유리
 
 ### 5. 사운드 매니저
 - 구현방식
