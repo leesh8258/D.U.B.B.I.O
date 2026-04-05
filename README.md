@@ -151,6 +151,30 @@ public void AddDigitA(int digit)
   - 클리어 처리나 UI 연출, 정지/재개 같은 공통 기능도 일관되게 유지할 수 있다는 장점
 
 ### 4. 사운드 매니저
+<details open>
+  <summary>사운드 재생 코드 일부</summary>
+  
+```csharp
+// SoundManager.cs
+public SoundHandle Play(string key, SFXPlayOptions options)
+{
+    if (sfxPlayer == null) return null;
+    return sfxPlayer.Play(key, options);
+}
+
+public SoundHandle PlayAt(string key, Vector3 position)
+{
+    if (sfxPlayer == null) return null;
+    return sfxPlayer.PlayAt(key, position);
+}
+
+public SoundHandle PlayAttached(string key, Transform target)
+{
+    if (sfxPlayer == null) return null;
+    return sfxPlayer.PlayAttached(key, target);
+}
+```
+</details>
 
 - **구현 방식**
   - SoundLibrarySO 단일 라이브러리에서 BGM과 SFX를 key 기반으로 조회하도록 구성
