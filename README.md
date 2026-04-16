@@ -1,5 +1,5 @@
 # D.U.B.B.I.O
-<img width="32%" height="auto" alt="Image" src="https://github.com/user-attachments/assets/aac0fab7-6bc1-4632-a464-35356a0ac075" />
+<img width="32%" height="auto" alt="image" src="https://github.com/user-attachments/assets/dab4d111-d832-4db2-adf3-59de49c21326" />
 <img width="32%" height="auto" alt="image" src="https://github.com/user-attachments/assets/6c047fa2-325e-46de-9572-346706468e75" />
 <img width="32%" height="auto" alt="image" src="https://github.com/user-attachments/assets/9f4529a5-df32-4685-9f56-286a094afe1e" />
 <div align="center">
@@ -162,7 +162,7 @@ public bool RemoveItem(ItemType type)
 
 - 해결 방식: 저장 대상 데이터를 다시 점검해 불필요한 데이터를 줄이고 **전체 저장 구조를 경량화**했습니다. 이후 플레이어가 로딩 상태를 명확히 인지할 수 있도록 **로딩 화면을 추가**했으며, 세이브 / 로드 처리 또한 **비동기 방식**으로 리팩토링해 메인 흐름이 멈춰 보이는 문제를 완화했습니다.
 
-- 결과: 세이브 / 로드 소요 시간은 같은 노트북 기준으로 1~2초 수준으로 줄어들었습니다. 또한 순간적인 프레임 정지가 발생하더라도 로딩 화면을 통해 현재 저장 또는 불러오기가 진행 중이라는 점을 즉시 전달할 수 있게 되었고, 플레이어가 체감하는 대기 시간과 불편함 역시 함께 줄일 수 있었습니다.
+- 결과: 세이브 / 로드 소요 시간은 같은 노트북 기준으로 **1~2초 수준**으로 줄어들었습니다. 또한 순간적인 프레임 정지가 발생하더라도 **로딩 화면을 통해 현재 저장 또는 불러오기가 진행 중이라는 점을 즉시 전달**할 수 있게 되었고, 플레이어가 체감하는 대기 시간과 불편함 역시 함께 줄일 수 있었습니다.
 
 ### 2. 사운드 매니저 리팩토링
 - 문제 상황: 이전 사운드 구조는 enum, BGM_SO, SFX_SO, WorldSoundNode를 함께 사용하는 방식이었고, 새로운 사운드를 추가하거나 **수정할 때마다 enum 값 추가**, **SO Entry 등록**, 경우에 따라 씬 내 오브젝트에 **사운드용 컴포넌트 부착까지 필요**했습니다. 이 때문에 **기획자도 현재 코드 구조와 씬 구성 방식을 어느 정도 이해**해야 했고, 프로그래머 역시 단순한 사운드 변경에도 반복적으로 구조를 수정해야 해 **관리가 매우 불편**했습니다.
