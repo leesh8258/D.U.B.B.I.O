@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public sealed class SoundHandle
+public class SoundHandle
 {
     private readonly SoundSFXPlayer soundPlayer;
     private readonly int soundId;
