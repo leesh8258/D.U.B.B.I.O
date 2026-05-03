@@ -123,7 +123,7 @@ public bool RemoveItem(ItemType type)
 {
     int mask = 1 << (int)type;
 
-     if ((itemFlag & mask) == 0) return false;
+    if ((itemFlag & mask) == 0) return false;
     itemFlag &= ~mask;
     return true;
 }
