@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// 사운드 컨트롤 전용 클래스
 public class SoundHandle
 {
     private readonly SoundSFXPlayer soundPlayer;
